@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>English Level Test | آزمون سطح انگلیسی</title>
+<style>
+:root{
+  --bg:#f4f6fb; --card:#ffffff; --ink:#1e2430; --muted:#66707f;
+  --primary:#2f6fed; --primary-dark:#1e54c0; --primary-soft:#e8efff;
+  --ok:#1a9e5c; --ok-soft:#e2f6ec; --bad:#d84040; --bad-soft:#fdeaea;
+  --warn:#b7791f; --border:#dfe4ee; --radius:14px;
+  --shadow:0 2px 10px rgba(30,40,60,.08);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--bg); color:var(--ink);
+  font-family:"Segoe UI",Roboto,Helvetica,Arial,Tahoma,sans-serif;
+  line-height:1.55; padding:18px 14px 48px;
+}
+[dir="rtl"] body, body.fa{
+  font-family:Tahoma,Vazirmatn,"Segoe UI",Roboto,Arial,sans-serif;
+}
+.wrap{max-width:860px;margin:0 auto}
+header.app{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:14px 18px;margin-bottom:16px;flex-wrap:wrap;
+}
+header.app h1{font-size:1.15rem;margin:0;flex:1 1 auto}
+.badge-timer{
+  font-variant-numeric:tabular-nums;background:var(--primary-soft);color:var(--primary-dark);
+  border-radius:999px;padding:4px 14px;font-weight:600;min-width:84px;text-align:center;
+}
+.badge-timer.low{background:var(--bad-soft);color:var(--bad)}
+button{
+  font:inherit;cursor:pointer;border:1px solid var(--border);background:var(--card);
+  color:var(--ink);border-radius:10px;padding:9px 16px;transition:background .15s,border-color .15s,transform .05s;
+}
+button:hover{background:var(--primary-soft);border-color:var(--primary)}
+button:focus-visible{outline:3px solid #9db9f7;outline-offset:2px}
+button:active{transform:translateY(1px)}
+button.primary{background:var(--primary);border-color:var(--primary);color:#fff;font-weight:600}
+button.primary:hover{background:var(--primary-dark)}
+button:disabled{opacity:.45;cursor:not-allowed}
+.card{
+  background:var(--card);border:1px solid var(--border);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:24px;
+}
+[hidden]{display:none !important}
+.screen h2{margin:0 0 10px}
+.muted{color:var(--muted)}
+ul.rules{padding-inline-start:22px;margin:10px 0 20px}
+ul.rules li{margin:5px 0}
+.meta{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 18px}
+.meta span{
+  background:var(--primary-soft);color:var(--primary-dark);border-radius:999px;
+  padding:4px 13px;font-size:.9rem;font-weight:600;
+}
+.quiz-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.counter{font-weight:600}
+.level-badge{
+  font-size:.8rem;font-weight:700;letter-spacing:.5px;border-radius:999px;padding:3px 12px;color:#fff;
+}
+.level-A2{background:#2f9e6e}.level-B1{background:#b7791f}.level-B2{background:#8a4fd3}
+.qtext{font-size:1.15rem;font-weight:600;margin:6px 0 18px}
+.options{display:grid;gap:10px;margin-bottom:20px}
+.opt{
+  display:flex;align-items:flex-start;gap:12px;border:1.5px solid var(--border);
+  border-radius:12px;padding:12px 14px;cursor:pointer;transition:border-color .15s,background .15s;
+}
+.opt:hover{border-color:var(--primary);background:var(--primary-soft)}
+.opt .letter{
+  flex:0 0 auto;width:28px;height:28px;border-radius:50%;background:var(--primary-soft);
+  color:var(--primary-dark);font-weight:700;display:flex;align-items:center;justify-content:center;
+}
+.opt.selected{border-color:var(--primary);background:var(--primary-soft)}
+.opt.selected .letter{background:var(--primary);color:#fff}
+.opt.correct{border-color:var(--ok);background:var(--ok-soft)}
+.opt.correct .letter{background:var(--ok);color:#fff}
+.opt.incorrect{border-color:var(--bad);background:var(--bad-soft)}
+.opt.incorrect .letter{background:var(--bad);color:#fff}
+.opt.none{border-color:var(--warn);background:#fdf6e7}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.palette{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:7px;margin:18px 0}
+.pcell{
+  padding:8px 0;text-align:center;border:1.5px solid var(--border);border-radius:9px;
+  background:var(--card);font:inherit;cursor:pointer;font-weight:600;
+}
+.pcell.answered{background:var(--primary);border-color:var(--primary);color:#fff}
+.pcell.current{outline:3px solid var(--primary-dark);outline-offset:1px}
+.answered-count{font-weight:600;margin:6px 0 0}
+.result-head{text-align:center;margin-bottom:18px}
+.score-big{font-size:2.4rem;font-weight:800;margin:6px 0}
+.pass{color:var(--ok)}.fail{color:var(--bad)}
+.notice{
+  background:#fdf6e7;border:1px solid #eedc9a;color:var(--warn);border-radius:10px;
+  padding:10px 14px;margin-bottom:14px;font-weight:600;
+}
+table.breakdown{width:100%;border-collapse:collapse;margin:12px 0 24px}
+table.breakdown th,table.breakdown td{border:1px solid var(--border);padding:8px 10px;text-align:start}
+table.breakdown th{background:var(--primary-soft);color:var(--primary-dark)}
+.review-item{border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.review-item .qtext{font-size:1.02rem;margin:4px 0 10px}
+.review-item .opt{cursor:default;margin-bottom:6px}
+.review-item .opt:hover{background:inherit;border-color:inherit}
+.review-note{
+  background:#f6f8fc;border-inline-start:4px solid var(--primary);border-radius:6px;
+  padding:8px 12px;margin-top:6px;font-size:.93rem;color:var(--muted);
+}
+.tag{font-size:.78rem;font-weight:700;border-radius:6px;padding:2px 8px;color:#fff}
+.result-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;justify-content:center}
+hr.sep{border:none;border-top:1px solid var(--border);margin:22px 0}
+@media print{
+  body{background:#fff;padding:0}
+  .card,header.app{box-shadow:none;border-color:#ccc}
+  button{display:none}
+}
+@media (max-width:480px){
+  .card{padding:16px}
+  .score-big{font-size:2rem}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="app">
+  <h1 data-i18n="title">English Level Test</h1>
+  <span class="badge-timer" id="timer" hidden>25:00</span>
+  <button id="langBtn" aria-label="Toggle language">فارسی</button>
+</header>
+
+<!-- START SCREEN -->
+<section class="card screen" id="screen-start">
+  <h2 data-i18n="startTitle">Welcome!</h2>
+  <p class="muted" data-i18n="startIntro">This test checks your English grammar level from A2 to B2.</p>
+  <ul class="rules">
+    <li data-i18n="rule1">25 multiple-choice questions, one correct answer each.</li>
+    <li data-i18n="rule2">You may skip questions and come back using the question grid.</li>
+    <li data-i18n="rule3">You can use keys 1–4 (or A–D) to answer and arrow keys to navigate.</li>
+  </ul>
+  <div class="meta">
+    <span data-i18n="metaCount">25 questions</span>
+    <span data-i18n="metaPass">Pass mark: 60%</span>
+    <span data-i18n="metaTime">Duration: 25 minutes</span>
+  </div>
+  <button class="primary" id="startBtn" data-i18n="startBtn">Start test</button>
+</section>
+
+<!-- QUIZ SCREEN -->
+<section class="card screen" id="screen-quiz" hidden>
+  <div class="quiz-top">
+    <span class="counter" id="counter"></span>
+    <span class="level-badge" id="levelBadge"></span>
+  </div>
+  <p class="qtext" id="qtext"></p>
+  <div class="options" id="options"></div>
+  <div class="nav">
+    <button id="prevBtn" data-i18n="prev">Previous</button>
+    <button class="primary" id="nextBtn" data-i18n="next">Next</button>
+  </div>
+  <div class="palette" id="palette"></div>
+  <p class="answered-count" id="answeredCount"></p>
+  <hr class="sep">
+  <button class="primary" id="submitBtn" data-i18n="submit">Submit test</button>
+</section>
+
+<!-- RESULT SCREEN -->
+<section class="card screen" id="screen-result" hidden>
+  <div class="notice" id="timeupNotice" hidden data-i18n="timeup">⏰ Time is up! Your test was submitted automatically.</div>
+  <div class="result-head">
+    <h2 data-i18n="resultTitle">Your results</h2>
+    <div class="score-big" id="scoreBig"></div>
+    <div id="passFail" style="font-weight:700;font-size:1.15rem"></div>
+  </div>
+  <h3 data-i18n="breakdown">Level breakdown</h3>
+  <table class="breakdown">
+    <thead><tr><th data-i18n="thLevel">Level</th><th data-i18n="thScore">Score</th><th data-i18n="thPct">Percentage</th></tr></thead>
+    <tbody id="breakdownBody"></tbody>
+  </table>
+  <h3 data-i18n="review">Full review</h3>
+  <div id="reviewList"></div>
+  <div class="result-actions">
+    <button id="csvBtn" data-i18n="exportCsv">Export CSV</button>
+    <button class="primary" id="retryBtn" data-i18n="retry">Retry</button>
+  </div>
+</section>
+</div>
+
+<script>
+const QUESTIONS = [
+  {
+    "id": 1,
+    "level": "A2",
+    "q": "She ______ to work by bus every day.",
+    "options": [
+      "go",
+      "goes",
+      "going",
+      "is go"
+    ],
+    "answer": 1,
+    "note": "In the present simple, we add -s to the verb with he/she/it: she goes. The other options are either the wrong form or the wrong tense."
+  },
+  {
+    "id": 2,
+    "level": "A2",
+    "q": "I ______ my homework yesterday evening.",
+    "options": [
+      "did",
+      "do",
+      "done",
+      "doing"
+    ],
+    "answer": 0,
+    "note": "“Yesterday evening” shows a finished action in the past, so we use the past simple: did. “Done” is a past participle and needs an auxiliary (have done)."
+  },
+  {
+    "id": 3,
+    "level": "A2",
+    "q": "This bag is ______ than that one.",
+    "options": [
+      "cheap",
+      "cheapest",
+      "cheaper",
+      "more cheap"
+    ],
+    "answer": 2,
+    "note": "Short adjectives form the comparative with -er + than: cheaper than. “Cheapest” is the superlative, and “more cheap” is incorrect for a one-syllable adjective."
+  },
+  {
+    "id": 4,
+    "level": "A2",
+    "q": "There isn’t ______ milk in the fridge.",
+    "options": [
+      "some",
+      "many",
+      "any",
+      "a"
+    ],
+    "answer": 2,
+    "note": "We use any in negative sentences and questions with uncountable nouns. “Some” is mainly for positive sentences, and “many” cannot be used with an uncountable noun like milk."
+  },
+  {
+    "id": 5,
+    "level": "A2",
+    "q": "We ______ visit our grandparents next weekend.",
+    "options": [
+      "are going to",
+      "going to",
+      "go to",
+      "will going"
+    ],
+    "answer": 0,
+    "note": "For a plan or intention about the future, we use be going to + base verb: We are going to visit. Option (b) has no be, and (d) mixes will with -ing."
+  },
+  {
+    "id": 6,
+    "level": "B1",
+    "q": "The report ______ by the marketing team last Friday.",
+    "options": [
+      "sent",
+      "was sent",
+      "is sent",
+      "has sent"
+    ],
+    "answer": 1,
+    "note": "The report receives the action and the time is finished (“last Friday”), so we need the past simple passive: was sent. Option (a) is active and (d) would mean the report did the sending."
+  },
+  {
+    "id": 7,
+    "level": "B1",
+    "q": "She asked me ______ I had ever visited Kyoto.",
+    "options": [
+      "that",
+      "if",
+      "do",
+      "what"
+    ],
+    "answer": 1,
+    "note": "For a reported yes/no question, we use if (or whether): She asked me if I had ever visited Kyoto. No question word is needed, and the word order stays affirmative."
+  },
+  {
+    "id": 8,
+    "level": "B1",
+    "q": "You ______ take an umbrella — it looks like rain.",
+    "options": [
+      "should",
+      "would",
+      "could have",
+      "must to"
+    ],
+    "answer": 0,
+    "note": "Should expresses advice or a recommendation. “Must to” is grammatically impossible (must never takes to), and “could have” refers to an unreal past possibility."
+  },
+  {
+    "id": 9,
+    "level": "B1",
+    "q": "This is the café ______ we first met.",
+    "options": [
+      "which",
+      "where",
+      "who",
+      "when"
+    ],
+    "answer": 1,
+    "note": "We need a relative adverb for a place: the café where we met. “Which” would need a preposition (the café in which we met), and “who” refers only to people."
+  },
+  {
+    "id": 10,
+    "level": "B1",
+    "q": "I wish I ______ more attention in class last term.",
+    "options": [
+      "paid",
+      "had paid",
+      "pay",
+      "would pay"
+    ],
+    "answer": 1,
+    "note": "To express regret about the past, we use wish + past perfect: I wish I had paid more attention. The past simple (a) is for regrets about the present."
+  },
+  {
+    "id": 11,
+    "level": "B1",
+    "q": "You’ve never been to Isfahan, ______?",
+    "options": [
+      "did you",
+      "have you",
+      "haven’t you",
+      "are you"
+    ],
+    "answer": 1,
+    "note": "After a negative statement, the question tag must be positive. The auxiliary in the sentence is have (present perfect), so the tag is have you."
+  },
+  {
+    "id": 12,
+    "level": "B1",
+    "q": "She ______ live in a small village before she moved to the city.",
+    "options": [
+      "is used to",
+      "was used to",
+      "used to",
+      "use to"
+    ],
+    "answer": 2,
+    "note": "Used to + base verb describes a past habit that no longer exists. Be used to means “be accustomed to” and is followed by a noun or gerund, so it does not fit here."
+  },
+  {
+    "id": 13,
+    "level": "B1",
+    "q": "I’m not very good ______ remembering people’s names.",
+    "options": [
+      "for",
+      "on",
+      "with",
+      "at"
+    ],
+    "answer": 3,
+    "note": "The adjective good is followed by the fixed preposition at: good at (doing) something. The same pattern applies to bad at, excellent at."
+  },
+  {
+    "id": 14,
+    "level": "B1",
+    "q": "There are only ______ seats left, so you should book soon.",
+    "options": [
+      "a little",
+      "a few",
+      "much",
+      "few of"
+    ],
+    "answer": 1,
+    "note": "Seats is a countable plural noun, so we use a few. A little and much go with uncountable nouns, and few of needs a determiner after it (few of them)."
+  },
+  {
+    "id": 15,
+    "level": "B1",
+    "q": "He’s been at work for twelve hours — he ______ be exhausted.",
+    "options": [
+      "should",
+      "can",
+      "must",
+      "would"
+    ],
+    "answer": 2,
+    "note": "Must expresses a strong logical deduction about the present (“I’m sure he is”). Should suggests expectation or advice, and can is not used for affirmative deduction."
+  },
+  {
+    "id": 16,
+    "level": "B1",
+    "q": "She left the office early ______ catch the last train.",
+    "options": [
+      "for",
+      "so",
+      "to",
+      "for to"
+    ],
+    "answer": 2,
+    "note": "We express purpose with the infinitive of purpose: left early to catch. For would need a gerund or noun (for catching is unnatural here), and for to is never correct."
+  },
+  {
+    "id": 17,
+    "level": "B1",
+    "q": "I haven’t finished the report ______.",
+    "options": [
+      "already",
+      "just",
+      "still",
+      "yet"
+    ],
+    "answer": 3,
+    "note": "In negative sentences, yet is used at the end to mean “up to now”. Already is mainly used in positives, and still would normally come before the auxiliary (still haven’t finished)."
+  },
+  {
+    "id": 18,
+    "level": "B1",
+    "q": "She told me she ______ the film the night before.",
+    "options": [
+      "saw",
+      "has seen",
+      "was seeing",
+      "had seen"
+    ],
+    "answer": 3,
+    "note": "In reported speech, when the reporting verb is in the past, the past simple shifts back to the past perfect. The night before confirms the earlier event."
+  },
+  {
+    "id": 19,
+    "level": "B2",
+    "q": "If I hadn’t missed the flight, I ______ at the meeting right now.",
+    "options": [
+      "will be",
+      "would be",
+      "would have been",
+      "am"
+    ],
+    "answer": 1,
+    "note": "This is a mixed conditional: a past condition (hadn’t missed) with a present result (right now). The result clause therefore takes would + base verb, not would have + participle."
+  },
+  {
+    "id": 20,
+    "level": "B2",
+    "q": "Rarely ______ such a well-organised conference.",
+    "options": [
+      "I have attended",
+      "I attended",
+      "have I attended",
+      "did I attend"
+    ],
+    "answer": 2,
+    "note": "After a negative or restrictive adverb at the beginning of a sentence (rarely, seldom, never, hardly), the subject and auxiliary are inverted: Rarely have I attended."
+  },
+  {
+    "id": 21,
+    "level": "B2",
+    "q": "______ in 1923, the building is now a museum.",
+    "options": [
+      "Building",
+      "To build",
+      "Having built",
+      "Built"
+    ],
+    "answer": 3,
+    "note": "A past participle clause replaces a passive relative clause: Built in 1923 = which was built in 1923. Having built would wrongly suggest the building did the building."
+  },
+  {
+    "id": 22,
+    "level": "B2",
+    "q": "He denied ______ anything about the missing files.",
+    "options": [
+      "to know",
+      "knowing",
+      "know",
+      "that he knows"
+    ],
+    "answer": 1,
+    "note": "The verb deny is followed by a gerund: deny doing something. Option (d) is also impossible because the reported clause would need a past tense (that he knew)."
+  },
+  {
+    "id": 23,
+    "level": "B2",
+    "q": "______ the heavy traffic, we still arrived on time.",
+    "options": [
+      "Although",
+      "However",
+      "Despite",
+      "Even though"
+    ],
+    "answer": 2,
+    "note": "Despite is a preposition and is followed by a noun phrase (the heavy traffic). Although and even though need a full clause, and however is an adverb requiring different punctuation."
+  },
+  {
+    "id": 24,
+    "level": "B2",
+    "q": "By next June, she ______ here for ten years.",
+    "options": [
+      "will work",
+      "will be working",
+      "has worked",
+      "will have been working"
+    ],
+    "answer": 3,
+    "note": "By + future time signals the future perfect, and because the action is continuous up to that point, the future perfect continuous is the most precise form: will have been working."
+  },
+  {
+    "id": 25,
+    "level": "B2",
+    "q": "It is essential that every student ______ the safety rules.",
+    "options": [
+      "follows",
+      "followed",
+      "will follow",
+      "follow"
+    ],
+    "answer": 3,
+    "note": "After expressions such as it is essential/important that, formal English uses the subjunctive: the base form of the verb with no -s, even in the third person (every student follow)."
+  }
+];
+
+/* ---------- i18n ---------- */
+const I18N = {
+  en:{
+    title:"English Level Test",
+    startTitle:"Welcome!",
+    startIntro:"This test checks your English grammar level from A2 to B2.",
+    rule1:"25 multiple-choice questions, one correct answer each.",
+    rule2:"You may skip questions and come back using the question grid.",
+    rule3:"You can use keys 1–4 (or A–D) to answer and arrow keys to navigate.",
+    metaCount:"25 questions", metaPass:"Pass mark: 60%", metaTime:"Duration: 25 minutes",
+    startBtn:"Start test", prev:"Previous", next:"Next", submit:"Submit test",
+    counter:"Question {n} of {total}",
+    answered:"Answered {x}/{total}",
+    confirmSubmit:"Submit the test and see your results?",
+    warnUnanswered:"You have {x} unanswered question(s). Submit anyway?",
+    timeup:"⏰ Time is up! Your test was submitted automatically.",
+    resultTitle:"Your results", breakdown:"Level breakdown",
+    thLevel:"Level", thScore:"Score", thPct:"Percentage",
+    review:"Full review", exportCsv:"Export CSV", retry:"Retry",
+    pass:"PASS", fail:"FAIL",
+    notAnswered:"Not answered",
+    yourAnswer:"Your answer", correctAnswer:"Correct answer",
+    correctLabel:"Correct", wrongLabel:"Your wrong choice",
+    explanation:"Explanation",
+    timerLabel:"Time remaining",
+    langBtn:"فارسی"
+  },
+  fa:{
+    title:"آزمون سطح انگلیسی",
+    startTitle:"خوش آمدید!",
+    startIntro:"این آزمون سطح دستور زبان انگلیسی شما را از A2 تا B2 می‌سنجد.",
+    rule1:"۲۵ سؤال چهارگزینه‌ای که هر کدام یک پاسخ درست دارند.",
+    rule2:"می‌توانید سؤالی را رد کنید و بعداً از طریق جدول شماره‌ها به آن برگردید.",
+    rule3:"با کلیدهای ۱ تا ۴ (یا A تا D) گزینه را انتخاب و با کلیدهای جهت‌دار جابه‌جا شوید.",
+    metaCount:"۲۵ سؤال", metaPass:"حد قبولی: ۶۰٪", metaTime:"مدت آزمون: ۲۵ دقیقه",
+    startBtn:"شروع آزمون", prev:"قبلی", next:"بعدی", submit:"پایان و ثبت آزمون",
+    counter:"سؤال {n} از {total}",
+    answered:"پاسخ‌داده‌شده {x}/{total}",
+    confirmSubmit:"آزمون را ثبت و نتیجه را ببینید؟",
+    warnUnanswered:"شما {x} سؤال بی‌پاسخ دارید. باز هم ثبت شود؟",
+    timeup:"⏰ زمان به پایان رسید! آزمون شما به‌طور خودکار ثبت شد.",
+    resultTitle:"نتیجه شما", breakdown:"تفکیک بر اساس سطح",
+    thLevel:"سطح", thScore:"نمره", thPct:"درصد",
+    review:"مرور کامل پاسخ‌ها", exportCsv:"دریافت فایل CSV", retry:"تلاش مجدد",
+    pass:"قبول", fail:"مردود",
+    notAnswered:"بدون پاسخ",
+    yourAnswer:"پاسخ شما", correctAnswer:"پاسخ صحیح",
+    correctLabel:"پاسخ صحیح", wrongLabel:"انتخاب نادرست شما",
+    explanation:"توضیح",
+    timerLabel:"زمان باقی‌مانده",
+    langBtn:"EN"
+  }
+};
+let lang = "en";
+try{ lang = localStorage.getItem("elt-lang") === "fa" ? "fa" : "en"; }catch(e){}
+function t(key, vars){
+  let s = (I18N[lang][key] !== undefined ? I18N[lang][key] : I18N.en[key]) || key;
+  if(vars) for(const k in vars) s = s.replace("{"+k+"}", vars[k]);
+  return s;
+}
+function applyLang(){
+  document.documentElement.lang = lang;
+  document.documentElement.dir = lang === "fa" ? "rtl" : "ltr";
+  document.body.classList.toggle("fa", lang === "fa");
+  document.querySelectorAll("[data-i18n]").forEach(el=>{
+    el.textContent = t(el.getAttribute("data-i18n"));
+  });
+  document.getElementById("langBtn").textContent = t("langBtn");
+  render();
+  if(!screens.result.hidden && submitted) renderResult();
+}
+
+/* ---------- state ---------- */
+const TOTAL = QUESTIONS.length;
+const DURATION = 25*60;
+let current = 0;
+let answers = new Array(TOTAL).fill(null);
+let timeLeft = DURATION;
+let timerId = null;
+let submitted = false;
+let timeUp = false;
+
+const $ = id => document.getElementById(id);
+const screens = {start:$("screen-start"), quiz:$("screen-quiz"), result:$("screen-result")};
+function show(name){
+  for(const k in screens) screens[k].hidden = (k !== name);
+  window.scrollTo(0,0);
+}
+
+/* ---------- timer ---------- */
+function fmt(sec){
+  const m = Math.floor(sec/60), s = sec%60;
+  return String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");
+}
+function tick(){
+  timeLeft--;
+  const el = $("timer");
+  el.textContent = fmt(Math.max(timeLeft,0));
+  el.classList.toggle("low", timeLeft <= 60);
+  el.setAttribute("aria-label", t("timerLabel")+" "+el.textContent);
+  if(timeLeft <= 0){
+    clearInterval(timerId); timerId = null;
+    timeUp = true;
+    submitTest(true);
+  }
+}
+function startTimer(){
+  timeLeft = DURATION;
+  const el = $("timer");
+  el.hidden = false;
+  el.textContent = fmt(timeLeft);
+  el.classList.remove("low");
+  if(timerId) clearInterval(timerId);
+  timerId = setInterval(tick, 1000);
+}
+
+/* ---------- quiz rendering ---------- */
+const LETTERS = ["A","B","C","D"];
+function render(){
+  if(screens.quiz.hidden && screens.result.hidden && screens.start.hidden) return;
+  if(!screens.start.hidden){
+    $("startBtn").textContent = t("startBtn");
+    return;
+  }
+  if(!screens.quiz.hidden){
+    const q = QUESTIONS[current];
+    $("counter").textContent = t("counter",{n:current+1,total:TOTAL});
+    const badge = $("levelBadge");
+    badge.textContent = q.level;
+    badge.className = "level-badge level-"+q.level;
+    $("qtext").textContent = q.q;
+    const box = $("options");
+    box.innerHTML = "";
+    q.options.forEach((opt,i)=>{
+      const row = document.createElement("div");
+      row.className = "opt" + (answers[current]===i ? " selected":"");
+      row.setAttribute("role","button");
+      row.tabIndex = 0;
+      row.setAttribute("aria-pressed", answers[current]===i ? "true":"false");
+      const letter = document.createElement("span");
+      letter.className = "letter";
+      letter.textContent = LETTERS[i];
+      const txt = document.createElement("span");
+      txt.textContent = opt;
+      row.appendChild(letter); row.appendChild(txt);
+      row.addEventListener("click", ()=>select(i));
+      row.addEventListener("keydown", e=>{ if(e.key===" "||e.key==="Enter"){e.preventDefault();select(i);} });
+      box.appendChild(row);
+    });
+    $("prevBtn").disabled = current === 0;
+    $("nextBtn").disabled = current === TOTAL-1;
+    $("answeredCount").textContent = t("answered",{x:answers.filter(a=>a!==null).length,total:TOTAL});
+    const pal = $("palette");
+    pal.innerHTML = "";
+    for(let i=0;i<TOTAL;i++){
+      const b = document.createElement("button");
+      b.className = "pcell" + (answers[i]!==null?" answered":"") + (i===current?" current":"");
+      b.textContent = i+1;
+      b.setAttribute("aria-label","Question "+(i+1));
+      b.addEventListener("click", ()=>{ current = i; render(); });
+      pal.appendChild(b);
+    }
+  }
+}
+function select(i){
+  if(submitted) return;
+  answers[current] = i;
+  render();
+}
+
+/* ---------- submit & result ---------- */
+function submitTest(auto){
+  if(submitted) return;
+  if(!auto){
+    const un = answers.filter(a=>a===null).length;
+    let msg = t("confirmSubmit");
+    if(un>0) msg = t("warnUnanswered",{x:un});
+    if(!confirm(msg)) return;
+  }
+  submitted = true;
+  if(timerId){ clearInterval(timerId); timerId=null; }
+  $("timer").hidden = true;
+  $("timeupNotice").hidden = !timeUp;
+  show("result");
+  renderResult();
+}
+function renderResult(){
+  let score = 0;
+  const per = {};
+  QUESTIONS.forEach((q,i)=>{
+    per[q.level] = per[q.level] || {ok:0,total:0};
+    per[q.level].total++;
+    if(answers[i] === q.answer){ per[q.level].ok++; score++; }
+  });
+  const pct = Math.round(score/TOTAL*100);
+  const passed = pct >= 60;
+  const big = $("scoreBig");
+  big.textContent = score + " / " + TOTAL + "  (" + pct + "%)";
+  const pf = $("passFail");
+  pf.textContent = passed ? "✔ " + t("pass") : "✘ " + t("fail");
+  pf.className = passed ? "pass" : "fail";
+  const body = $("breakdownBody");
+  body.innerHTML = "";
+  ["A2","B1","B2"].forEach(lv=>{
+    if(!per[lv]) return;
+    const p = per[lv];
+    const tr = document.createElement("tr");
+    [lv, p.ok+" / "+p.total, Math.round(p.ok/p.total*100)+"%"].forEach(v=>{
+      const td = document.createElement("td");
+      td.textContent = v;
+      tr.appendChild(td);
+    });
+    body.appendChild(tr);
+  });
+  const list = $("reviewList");
+  list.innerHTML = "";
+  QUESTIONS.forEach((q,i)=>{
+    const item = document.createElement("div");
+    item.className = "review-item";
+    const head = document.createElement("div");
+    head.innerHTML = "";
+    const num = document.createElement("strong");
+    num.textContent = (i+1)+". ";
+    const lv = document.createElement("span");
+    lv.className = "tag level-"+q.level;
+    lv.textContent = q.level;
+    head.appendChild(num); head.appendChild(lv);
+    item.appendChild(head);
+    const qt = document.createElement("p");
+    qt.className = "qtext";
+    qt.textContent = q.q;
+    item.appendChild(qt);
+    const ua = answers[i];
+    q.options.forEach((opt,j)=>{
+      const row = document.createElement("div");
+      let cls = "opt";
+      let tagText = "";
+      if(j === q.answer){ cls += " correct"; tagText = "✔ "+t("correctLabel"); }
+      if(j === ua && j !== q.answer){ cls += " incorrect"; tagText = "✘ "+t("wrongLabel"); }
+      if(ua === null && j === q.answer){ /* already marked correct */ }
+      row.className = cls;
+      const letter = document.createElement("span");
+      letter.className = "letter";
+      letter.textContent = LETTERS[j];
+      const txt = document.createElement("span");
+      txt.textContent = opt + (tagText ? "  — " + tagText : "");
+      row.appendChild(letter); row.appendChild(txt);
+      item.appendChild(row);
+    });
+    if(ua === null){
+      const na = document.createElement("p");
+      na.className = "none";
+      na.style.cssText = "color:var(--warn);font-weight:600;margin:4px 0;";
+      na.textContent = "— " + t("notAnswered");
+      item.appendChild(na);
+    }
+    const note = document.createElement("div");
+    note.className = "review-note";
+    note.textContent = t("explanation")+": "+q.note;
+    item.appendChild(note);
+    list.appendChild(item);
+  });
+}
+
+/* ---------- CSV export ---------- */
+function csvField(v){
+  let s = String(v);
+  if(/[",\n\r]/.test(s)) s = '"' + s.replace(/"/g,'""') + '"';
+  return s;
+}
+function exportCsv(){
+  const rows = [["No","Level","Question","Option A","Option B","Option C","Option D","Your answer","Correct answer","Result","Explanation"]];
+  QUESTIONS.forEach((q,i)=>{
+    const ua = answers[i];
+    const result = ua===null ? t("notAnswered") : (ua===q.answer ? "Correct" : "Incorrect");
+    rows.push([
+      i+1, q.level, q.q,
+      q.options[0], q.options[1], q.options[2], q.options[3],
+      ua===null ? "" : LETTERS[ua]+" - "+q.options[ua],
+      LETTERS[q.answer]+" - "+q.options[q.answer],
+      result, q.note
+    ].map(csvField).join(","));
+  });
+  const csv = "\uFEFF" + rows.join("\r\n");
+  const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "english-level-test-results.csv";
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+
+/* ---------- reset ---------- */
+function retry(){
+  answers = new Array(TOTAL).fill(null);
+  current = 0;
+  submitted = false;
+  timeUp = false;
+  timeLeft = DURATION;
+  $("timeupNotice").hidden = true;
+  show("start");
+  $("timer").hidden = true;
+}
+
+/* ---------- events ---------- */
+$("startBtn").addEventListener("click", ()=>{
+  retry();
+  show("quiz");
+  startTimer();
+  render();
+});
+$("prevBtn").addEventListener("click", ()=>{ if(current>0){current--;render();} });
+$("nextBtn").addEventListener("click", ()=>{ if(current<TOTAL-1){current++;render();} });
+$("submitBtn").addEventListener("click", ()=>submitTest(false));
+$("csvBtn").addEventListener("click", exportCsv);
+$("retryBtn").addEventListener("click", retry);
+$("langBtn").addEventListener("click", ()=>{
+  lang = (lang === "en") ? "fa" : "en";
+  try{ localStorage.setItem("elt-lang", lang); }catch(e){}
+  applyLang();
+});
+document.addEventListener("keydown", e=>{
+  if(screens.quiz.hidden || submitted) return;
+  const k = e.key.toLowerCase();
+  const map = {"1":0,"2":1,"3":2,"4":3,"a":0,"b":1,"c":2,"d":3};
+  if(k in map){ e.preventDefault(); select(map[k]); }
+  else if(e.key === "ArrowLeft"){
+    if(lang === "fa"){ if(current<TOTAL-1){current++;render();} }
+    else if(current>0){current--;render();}
+  }
+  else if(e.key === "ArrowRight"){
+    if(lang === "fa"){ if(current>0){current--;render();} }
+    else if(current<TOTAL-1){current++;render();}
+  }
+});
+
+applyLang();
+show("start");
+</script>
+</body>
+</html>
